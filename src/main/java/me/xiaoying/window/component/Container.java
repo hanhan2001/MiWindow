@@ -26,4 +26,15 @@ public abstract class Container extends Component {
         this.knownComponent.remove(component);
         ((java.awt.Container) this.getComponent()).remove(component.getComponent());
     }
+
+    public List<Component> getChildren() {
+        return this.knownComponent;
+    }
+
+    @Override
+    public void recalculate() {
+        super.recalculate();
+
+        this.knownComponent.forEach(Component::recalculate);
+    }
 }

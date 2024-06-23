@@ -1,5 +1,6 @@
 package me.xiaoying.window;
 
+import me.xiaoying.window.component.Component;
 import me.xiaoying.window.component.Container;
 import me.xiaoying.window.event.EventManager;
 import me.xiaoying.window.event.window.WindowCloseEvent;
@@ -65,6 +66,7 @@ public class Window extends Container {
             @Override
             public void componentResized(ComponentEvent e) {
                 eventManager.callEvent(new WindowResizedEvent(getWindow(), e.getComponent().getWidth(), e.getComponent().getHeight()));
+                recalculate();
             }
         });
         this.jFrame.addWindowListener(new WindowListener() {
@@ -111,6 +113,11 @@ public class Window extends Container {
 
     public EventManager getEventManager() {
         return eventManager;
+    }
+
+    @Override
+    public void recalculate() {
+        this.getChildren().forEach(Component::recalculate);
     }
 
     @Override
