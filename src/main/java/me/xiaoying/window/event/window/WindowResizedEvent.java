@@ -4,7 +4,7 @@ import me.xiaoying.window.Window;
 import me.xiaoying.window.event.HandlerList;
 
 public class WindowResizedEvent extends WindowEvent {
-    private static HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     private final int width;
     private final int height;
 

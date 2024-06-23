@@ -4,7 +4,7 @@ import me.xiaoying.window.Window;
 import me.xiaoying.window.event.HandlerList;
 
 public class WindowCloseEvent extends WindowEvent {
-    public static HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
     public WindowCloseEvent(Window window) {
         super(window);

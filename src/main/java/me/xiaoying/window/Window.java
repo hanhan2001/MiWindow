@@ -56,7 +56,6 @@ public class Window extends Container {
         this.jFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                System.out.println("窗口大小产生变化");
                 eventManager.callEvent(new WindowResizedEvent(getWindow(), e.getComponent().getWidth(), e.getComponent().getHeight()));
             }
         });
@@ -68,7 +67,6 @@ public class Window extends Container {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println(12355);
                 eventManager.callEvent(new WindowCloseEvent(getWindow()));
             }
 
