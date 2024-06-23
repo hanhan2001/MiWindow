@@ -106,6 +106,19 @@ public class Window extends Container {
         });
     }
 
+    public Component undecorated(boolean bool) {
+        this.jFrame.setUndecorated(bool);
+        this.recalculate();
+        return this;
+    }
+
+    @Override
+    public Component height(int height) {
+        if (!this.jFrame.isUndecorated())
+            height = height - 32;
+        return super.height(height);
+    }
+
     public Window resizable(boolean bool) {
         this.jFrame.setResizable(bool);
         return this;
