@@ -20,11 +20,11 @@ public abstract class Component {
     private final String normalSymbols = "[^a-zA-Z0-9.]";
     private java.awt.Component component;
 
-    public String getName() {
+    public String name() {
         return this.name;
     }
 
-    public Component setName(String name) {
+    public Component name(String name) {
         this.name = name;
         return this;
     }
