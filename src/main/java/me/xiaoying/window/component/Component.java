@@ -11,9 +11,19 @@ import java.util.regex.Pattern;
  * 元素
  */
 public abstract class Component {
+    private String name = null;
     private Component parent = null;
     private Window window;
     private final String normalSymbols = "[^a-zA-Z0-9.]";
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Component setName(String name) {
+        this.name = name;
+        return this;
+    }
 
     public int width() {
         return this.getComponent().getWidth();
