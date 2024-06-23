@@ -17,6 +17,8 @@ public class Window extends Container {
 
     public Window() {
         this.jFrame = new JFrame();
+        this.setComponent(this.jFrame);
+
         this.width(500);
         this.height(300);
 
@@ -25,6 +27,8 @@ public class Window extends Container {
 
     public Window(String title) {
         this.jFrame = new JFrame(title);
+        this.setComponent(this.jFrame);
+
         this.width(500);
         this.height(300);
 
@@ -33,6 +37,8 @@ public class Window extends Container {
 
     public Window(int width, int height) {
         this.jFrame = new JFrame();
+        this.setComponent(this.jFrame);
+
         this.width(width);
         this.height(height);
 
@@ -41,6 +47,8 @@ public class Window extends Container {
 
     public Window(String title, int width, int height) {
         this.jFrame = new JFrame(title);
+        this.setComponent(this.jFrame);
+
         this.width(width);
         this.height(height);
 
@@ -108,10 +116,5 @@ public class Window extends Container {
     @Override
     public Window getWindow() {
         return this;
-    }
-
-    @Override
-    public java.awt.Component getComponent() {
-        return this.jFrame;
     }
 }

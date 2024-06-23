@@ -1,8 +1,11 @@
 package me.xiaoying.window.component;
 
 import me.xiaoying.window.Window;
+import me.xiaoying.window.event.component.ClickedComponentEvent;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +18,7 @@ public abstract class Component {
     private Component parent = null;
     private Window window;
     private final String normalSymbols = "[^a-zA-Z0-9.]";
+    private java.awt.Component component;
 
     public String getName() {
         return this.name;
@@ -175,5 +179,39 @@ public abstract class Component {
         return this.window;
     }
 
-    public abstract java.awt.Component getComponent();
+    public Component setComponent(java.awt.Component component) {
+        this.component = component;
+
+        this.getComponent().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                getWindow().getEventManager().callEvent(new ClickedComponentEvent(Component.this));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        return this;
+    }
+
+    public java.awt.Component getComponent() {
+        return this.component;
+    }
 }
