@@ -179,7 +179,7 @@ public abstract class Component {
         return this.window;
     }
 
-    public Component setComponent(java.awt.Component component) {
+    protected Component setComponent(java.awt.Component component) {
         this.component = component;
 
         this.getComponent().addMouseListener(new MouseListener() {
@@ -211,7 +211,7 @@ public abstract class Component {
         return this;
     }
 
-    public java.awt.Component getComponent() {
+    protected java.awt.Component getComponent() {
         return this.component;
     }
 }
