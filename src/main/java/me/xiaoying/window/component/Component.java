@@ -306,6 +306,10 @@ public abstract class Component {
         this.width(this.width);
     }
 
+    public void visible(boolean bool) {
+        this.getComponent().setVisible(bool);
+    }
+
     protected java.awt.Component getComponent() {
         return this.component;
     }
