@@ -91,6 +91,8 @@ public class EventManager {
                 }
                 Method finalMethod = method;
                 EventExecutor executor = (listener1, event) -> {
+                    if (event.isCancelled())
+                        return;
                     try {
                         finalMethod.invoke(listener1, event);
                     } catch (IllegalAccessException | InvocationTargetException e) {
