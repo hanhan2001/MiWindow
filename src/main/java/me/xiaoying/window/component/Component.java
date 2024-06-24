@@ -6,7 +6,7 @@ import me.xiaoying.window.event.component.ClickedComponentEvent;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +21,8 @@ public abstract class Component {
     private java.awt.Component component;
     private String width = "";
     private String height = "";
+    private Model model = Model.NORMAL;
+    private HashMap<Model, Set<Runnable>> knownPseudo = new HashMap<>();
 
     public String name() {
         return this.name;
@@ -29,6 +31,19 @@ public abstract class Component {
     public Component name(String name) {
         this.name = name;
         return this;
+    }
+
+    protected void setModel(Model model) {
+        this.model = model;
+        switch (this.model) {
+            case NORMAL:
+//                this.module.close
+                break;
+            case ACTIVE:
+                break;
+            case HOVER:
+                break;
+        }
     }
 
     public int width() {
@@ -280,7 +295,7 @@ public abstract class Component {
 
             @Override
             public void mousePressed(MouseEvent e) {
-
+                System.out.println(12345);
             }
 
             @Override
@@ -298,6 +313,40 @@ public abstract class Component {
 
             }
         });
+        return this;
+    }
+
+    public void hover() {
+        if (this.knownPseudo.get(Model.HOVER) == null)
+            return;
+
+        this.knownPseudo.get(Model.HOVER).forEach(Runnable::run);
+    }
+
+    public Component hover(Runnable runnable) {
+        Set<Runnable> runnables;
+        if ((runnables = this.knownPseudo.get(Model.HOVER)) == null)
+            runnables = new HashSet<>();
+
+        runnables.add(runnable);
+        this.knownPseudo.put(Model.HOVER, runnables);
+        return this;
+    }
+
+    public void active() {
+        if (this.knownPseudo.get(Model.ACTIVE) == null)
+            return;
+
+        this.knownPseudo.get(Model.ACTIVE).forEach(Runnable::run);
+    }
+
+    public Component active(Runnable runnable) {
+        Set<Runnable> runnables;
+        if ((runnables = this.knownPseudo.get(Model.ACTIVE)) == null)
+            runnables = new HashSet<>();
+
+        runnables.add(runnable);
+        this.knownPseudo.put(Model.ACTIVE, runnables);
         return this;
     }
 
