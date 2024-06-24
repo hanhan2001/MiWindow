@@ -16,6 +16,7 @@ public abstract class Container extends Component {
         component.setParent(this);
         this.knownComponent.add(component);
         ((java.awt.Container) this.getComponent()).add(component.getComponent());
+        this.getComponent().repaint();
     }
 
     public void remove(Component component) {
