@@ -106,12 +106,6 @@ public class Window extends Container {
         });
     }
 
-    public Component undecorated(boolean bool) {
-        this.jFrame.setUndecorated(bool);
-        this.recalculate();
-        return this;
-    }
-
     @Override
     public Component height(int height) {
         this.getComponent().setSize(this.getComponent().getWidth(), height);
