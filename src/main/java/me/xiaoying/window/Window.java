@@ -114,9 +114,8 @@ public class Window extends Container {
 
     @Override
     public Component height(int height) {
-        if (!this.jFrame.isUndecorated())
-            height = height - 32;
-        return super.height(height);
+        this.getComponent().setSize(this.getComponent().getWidth(), height);
+        return this;
     }
 
     public Window resizable(boolean bool) {

@@ -219,7 +219,7 @@ public abstract class Component {
     }
 
     public Component height(int height) {
-        this.getComponent().setSize(this.getComponent().getWidth(), height);
+        this.getComponent().setSize(this.getComponent().getWidth(), height - 18);
         return this;
     }
 
