@@ -8,6 +8,20 @@ import java.util.List;
  */
 public abstract class Container extends Component {
     private final List<Component> knownComponent = new ArrayList<>();
+    private boolean setWidth = false;
+    private boolean setHeight = false;
+
+    @Override
+    public Component height(int height) {
+        this.setWidth = true;
+        return super.height(height);
+    }
+
+    @Override
+    public Component width(int width) {
+        this.setHeight = true;
+        return super.width(width);
+    }
 
     public void add(Component component) {
         if (this.knownComponent.contains(component))
@@ -34,8 +48,17 @@ public abstract class Container extends Component {
 
     @Override
     public void recalculate() {
-        super.recalculate();
+        int width = 0;
+        int height = 0;
+        for (Component component : this.knownComponent) {
+            component.recalculate();
+            width += component.width();
+            height += component.height();
+        }
 
-        this.knownComponent.forEach(Component::recalculate);
+        if (!this.setWidth)
+            this.width(width);
+        if (!this.setHeight)
+            this.height(height);
     }
 }
