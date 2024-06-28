@@ -40,8 +40,10 @@ public abstract class Component {
 //                this.module.close
                 break;
             case ACTIVE:
+                this.active();
                 break;
             case HOVER:
+                this.hover();
                 break;
         }
     }
