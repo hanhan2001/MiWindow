@@ -23,6 +23,7 @@ public abstract class Component {
     private String height = "";
     private Model model = Model.NORMAL;
     private HashMap<Model, Set<Runnable>> knownPseudo = new HashMap<>();
+    private Background background = new Background();
 
     public String name() {
         return this.name;
@@ -350,6 +351,10 @@ public abstract class Component {
         runnables.add(runnable);
         this.knownPseudo.put(Model.ACTIVE, runnables);
         return this;
+    }
+
+    public Background background() {
+        return this.background;
     }
 
     public void recalculate() {
