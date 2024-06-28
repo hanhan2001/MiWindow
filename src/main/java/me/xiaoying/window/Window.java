@@ -107,7 +107,7 @@ public class Window extends Container {
     }
 
     @Override
-    public Component height(int height) {
+    public Window height(int height) {
         this.getComponent().setSize(this.getComponent().getWidth(), height);
         return this;
     }
