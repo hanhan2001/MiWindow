@@ -27,6 +27,7 @@ public abstract class Component implements Cloneable {
     private HashMap<Model, Set<Runnable>> knownPseudo = new HashMap<>();
     private Background background = new Background(this);
     private Date lastChangeMode = new Date();
+    private Model lastModel = Model.NORMAL;
 
     public String name() {
         return this.name;
@@ -39,10 +40,11 @@ public abstract class Component implements Cloneable {
 
     protected void setModel(Model model) {
         // 判断上次设置 model 时间，避免出现循环设置导致系统卡死
-        if (new Date().getTime() - this.lastChangeMode.getTime() < 50)
+        if (model == this.lastModel && new Date().getTime() - this.lastChangeMode.getTime() < 50)
             return;
 
         this.lastChangeMode = new Date();
+        this.lastModel = model;
 
         this.model = model;
         switch (this.model) {
@@ -56,6 +58,7 @@ public abstract class Component implements Cloneable {
                 this.hover();
                 break;
         }
+
         Graphics graphics = this.getComponent().getGraphics();
         graphics.setColor(this.background.color());
         this.getComponent().paint(graphics);
