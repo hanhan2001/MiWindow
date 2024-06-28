@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class Button extends Component {
     private final MiButton miButton = new MiButton(this);
+    private boolean setWidth = false;
+    private boolean setHeight = false;
 
     public Button() {
         this.setComponent(this.miButton);
@@ -40,12 +42,36 @@ public class Button extends Component {
         this.miButton.setVisible(true);
     }
 
+    @Override
+    public Component height(int height) {
+        this.setWidth = true;
+        return super.height(height);
+    }
+
+    @Override
+    public Component width(int width) {
+        this.setHeight = true;
+        return super.width(width);
+    }
+
+    @Override
+    public void recalculate() {
+        int width = 0;
+        int height = 0;
+
+        if (!this.setWidth)
+            this.width(width);
+        if (!this.setHeight)
+            this.height(height);
+    }
+
     public String text() {
         return this.miButton.getText();
     }
 
     public Button text(String text) {
         this.miButton.setText(text);
+        this.recalculate();
         return this;
     }
 }
