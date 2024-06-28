@@ -21,9 +21,10 @@ public class MiButton extends JButton {
         // 采用 else if，避免出现既是 active 又是 hover
         if (this.getModel().isPressed()) {
             this.button.setModel(Model.ACTIVE);
-            g.setColor(Color.RED);
+            g.setColor(Color.PINK);
         } else if (this.getModel().isRollover()) {
             this.button.setModel(Model.HOVER);
+            g.setColor(Color.CYAN);
         }
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);

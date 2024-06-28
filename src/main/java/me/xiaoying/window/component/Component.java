@@ -13,17 +13,20 @@ import java.util.regex.Pattern;
 /**
  * 元素
  */
-public abstract class Component {
+public abstract class Component implements Cloneable {
     private String name = null;
     private Component parent = null;
     private Window window;
     private final String normalSymbols = "[^a-zA-Z0-9%.]";
     private java.awt.Component component;
-    private String width = "";
-    private String height = "";
+    private int width = 0;
+    private String extraWidth = null;
+    private int height = 0;
+    private String extraHeight = null;
     private Model model = Model.NORMAL;
     private HashMap<Model, Set<Runnable>> knownPseudo = new HashMap<>();
-    private Background background = new Background();
+    private Background background = new Background(this);
+    private Date lastChangeMode = new Date();
 
     public String name() {
         return this.name;
@@ -35,6 +38,12 @@ public abstract class Component {
     }
 
     protected void setModel(Model model) {
+        // 判断上次设置 model 时间，避免出现循环设置导致系统卡死
+        if (new Date().getTime() - this.lastChangeMode.getTime() < 50)
+            return;
+
+        this.lastChangeMode = new Date();
+
         this.model = model;
         switch (this.model) {
             case NORMAL:
@@ -47,10 +56,21 @@ public abstract class Component {
                 this.hover();
                 break;
         }
+        Graphics graphics = this.getComponent().getGraphics();
+        graphics.setColor(this.background.color());
+        this.getComponent().paint(graphics);
+        this.recalculate();
     }
 
     public int width() {
         return this.getComponent().getWidth();
+    }
+
+    public String width(boolean extra) {
+        if (!extra || this.extraWidth == null)
+            return this.width() + "px";
+
+        return this.extraWidth;
     }
 
     public Component width(String width) {
@@ -132,21 +152,29 @@ public abstract class Component {
                 break;
         }
 
+        this.extraWidth = width;
         return this.width(number);
     }
 
-    public Component width(double width) {
+    private Component width(double width) {
         return this.width((int) width);
     }
 
-    public Component width(int width) {
-        this.width = width + "px";
+    private Component width(int width) {
+        this.width = width;
         this.getComponent().setSize(width, this.getComponent().getHeight());
         return this;
     }
 
     public int height() {
         return this.getComponent().getHeight();
+    }
+
+    public String height(boolean extra) {
+        if (!extra || this.extraHeight == null)
+            return this.width() + "px";
+
+        return this.extraHeight;
     }
 
     public Component height(String height) {
@@ -228,16 +256,18 @@ public abstract class Component {
                 break;
         }
 
-        this.height = height;
+        this.extraHeight = height;
         return this.height(number);
     }
 
-    public Component height(double height) {
+    private Component height(double height) {
         return this.height((int) height);
     }
 
-    public Component height(int height) {
-        this.getComponent().setSize(this.getComponent().getWidth(), height - 18);
+    private Component height(int height) {
+        height = height - 18;
+        this.getComponent().setSize(this.getComponent().getWidth(), height);
+        this.height = height;
         return this;
     }
 
@@ -298,7 +328,6 @@ public abstract class Component {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println(12345);
             }
 
             @Override
@@ -358,8 +387,8 @@ public abstract class Component {
     }
 
     public void recalculate() {
-        this.height(this.height);
-        this.width(this.width);
+        this.height(this.height(true));
+        this.width(this.width(true));
     }
 
     public void visible(boolean bool) {
@@ -368,5 +397,21 @@ public abstract class Component {
 
     protected java.awt.Component getComponent() {
         return this.component;
+    }
+
+    @Override
+    protected Component clone() {
+        Background background = new Background(this);
+
+        try {
+            Component component = (Component) super.clone();
+            component.name = this.name;
+            component.width = this.width;
+            component.height = this.height;
+            component.background = background;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

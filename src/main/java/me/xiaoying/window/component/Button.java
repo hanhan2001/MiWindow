@@ -23,7 +23,7 @@ public class Button extends Component {
         this.init();
     }
 
-    public Button(String text, int width, int height) {
+    public Button(String text, String width, String height) {
         this.setComponent(this.miButton);
 
         this.miButton.setText(text);
@@ -42,27 +42,38 @@ public class Button extends Component {
         this.miButton.setVisible(true);
     }
 
+    private void width(int width) {
+        this.miButton.setSize(width, this.miButton.getHeight());
+    }
+
+    private void height(int height) {
+        this.miButton.setSize(this.miButton.getWidth(), height);
+    }
+
     @Override
-    public Component height(int height) {
-        this.setWidth = true;
+    public Component height(String height) {
+        this.setHeight = true;
         return super.height(height);
     }
 
     @Override
-    public Component width(int width) {
-        this.setHeight = true;
+    public Component width(String width) {
+        this.setWidth = true;
         return super.width(width);
     }
 
     @Override
     public void recalculate() {
-        int width = 0;
-        int height = 0;
+        if (!this.setWidth) {
+            this.width(this.miButton.getFontMetrics(this.miButton.getFont()).stringWidth(this.miButton.getText()));
+        }
+        else
+            this.width(super.width(true));
 
-        if (!this.setWidth)
-            this.width(width);
         if (!this.setHeight)
-            this.height(height);
+            this.height(this.miButton.getFontMetrics(this.miButton.getFont()).getHeight());
+        else
+            this.height(super.height(true));
     }
 
     public String text() {

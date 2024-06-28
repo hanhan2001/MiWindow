@@ -12,13 +12,13 @@ public abstract class Container extends Component {
     private boolean setHeight = false;
 
     @Override
-    public Component height(int height) {
+    public Component height(String height) {
         this.setWidth = true;
         return super.height(height);
     }
 
     @Override
-    public Component width(int width) {
+    public Component width(String width) {
         this.setHeight = true;
         return super.width(width);
     }
@@ -57,8 +57,8 @@ public abstract class Container extends Component {
         }
 
         if (!this.setWidth)
-            this.width(width);
+            this.width(width + "px");
         if (!this.setHeight)
-            this.height(height);
+            this.height(height + "px");
     }
 }
