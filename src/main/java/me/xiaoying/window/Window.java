@@ -7,10 +7,13 @@ import me.xiaoying.window.event.window.WindowCloseEvent;
 import me.xiaoying.window.event.window.WindowResizedEvent;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Enumeration;
 
 public class Window extends Container {
     private final JFrame jFrame;
@@ -58,6 +61,16 @@ public class Window extends Container {
 
     private void init() {
         this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        // default fort for component
+        FontUIResource fontRes = new FontUIResource(new Font("Microsoft YaHei", Font.PLAIN, 12));
+        for(Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();){
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+
+            if(value instanceof FontUIResource)
+                UIManager.put(key, fontRes);
+        }
 
         this.jFrame.setLayout(null);
         this.jFrame.setVisible(true);
