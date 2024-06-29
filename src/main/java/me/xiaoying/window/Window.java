@@ -82,6 +82,7 @@ public class Window extends Container {
                 recalculate();
             }
         });
+
         this.jFrame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -141,6 +142,15 @@ public class Window extends Container {
     @Override
     public void recalculate() {
         this.getChildren().forEach(Component::recalculate);
+    }
+
+    public String title() {
+        return this.jFrame.getTitle();
+    }
+
+    public Component title(String title) {
+        this.jFrame.setTitle(title);
+        return this;
     }
 
     @Override
