@@ -365,18 +365,6 @@ public abstract class Component implements Cloneable {
         return this.background;
     }
 
-//    public void repaint() {
-//        if (!(this.getComponent() instanceof MiComponent))
-//            return;
-//
-//        MiComponent c = (MiComponent) this.getComponent();
-//
-//        this.getComponent().getGraphics().setColor(this.background().color());
-//        Graphics graphics = this.getComponent().getGraphics();
-//        graphics.setColor(this.background().color());
-//        this.component.setBackground(this.background.color());
-//    }
-
     public void recalculate() {
         this.height(this.height(true));
         this.width(this.width(true));
