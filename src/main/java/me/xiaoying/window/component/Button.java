@@ -1,5 +1,7 @@
 package me.xiaoying.window.component;
 
+import me.xiaoying.window.awt.MiButton;
+
 import java.awt.*;
 
 public class Button extends Component {

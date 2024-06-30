@@ -1,6 +1,7 @@
 package me.xiaoying.window.component;
 
 import me.xiaoying.window.Window;
+import me.xiaoying.window.awt.MiComponent;
 import me.xiaoying.window.event.component.ClickedComponentEvent;
 
 import java.awt.*;
@@ -23,11 +24,9 @@ public abstract class Component implements Cloneable {
     private String extraWidth = null;
     private int height = 0;
     private String extraHeight = null;
-    private Model model = Model.NORMAL;
-    private HashMap<Model, Set<Runnable>> knownPseudo = new HashMap<>();
     private Background background = new Background(this);
-    private Date lastChangeMode = new Date();
-    private Model lastModel = Model.NORMAL;
+    private StateManager stateManager = new StateManager(this);
+    private EnumMap<StateManager.Model, Set<Runnable>> knownPseudo = new EnumMap<>(StateManager.Model.class);
 
     public String name() {
         return this.name;
@@ -36,33 +35,6 @@ public abstract class Component implements Cloneable {
     public Component name(String name) {
         this.name = name;
         return this;
-    }
-
-    protected void setModel(Model model) {
-        // 判断上次设置 model 时间，避免出现循环设置导致系统卡死
-        if (model == this.lastModel && new Date().getTime() - this.lastChangeMode.getTime() < 50)
-            return;
-
-        this.lastChangeMode = new Date();
-        this.lastModel = model;
-
-        this.model = model;
-        switch (this.model) {
-            case NORMAL:
-//                this.module.close
-                break;
-            case ACTIVE:
-                this.active();
-                break;
-            case HOVER:
-                this.hover();
-                break;
-        }
-
-        Graphics graphics = this.getComponent().getGraphics();
-        graphics.setColor(this.background.color());
-        this.getComponent().paint(graphics);
-        this.recalculate();
     }
 
     public int width() {
@@ -352,46 +324,58 @@ public abstract class Component implements Cloneable {
     }
 
     public void hover() {
-        if (this.knownPseudo.get(Model.HOVER) == null)
+        if (this.knownPseudo.get(StateManager.Model.HOVER) == null)
             return;
 
-        this.knownPseudo.get(Model.HOVER).forEach(Runnable::run);
+        this.knownPseudo.get(StateManager.Model.HOVER).forEach(Runnable::run);
     }
 
     public Component hover(Runnable runnable) {
         Set<Runnable> runnables;
-        if ((runnables = this.knownPseudo.get(Model.HOVER)) == null)
+        if ((runnables = this.knownPseudo.get(StateManager.Model.HOVER)) == null)
             runnables = new HashSet<>();
 
         runnables.add(runnable);
-        this.knownPseudo.put(Model.HOVER, runnables);
+        this.knownPseudo.put(StateManager.Model.HOVER, runnables);
         return this;
     }
 
     public void active() {
-        if (this.knownPseudo.get(Model.ACTIVE) == null)
+        if (this.knownPseudo.get(StateManager.Model.ACTIVE) == null)
             return;
 
-        this.knownPseudo.get(Model.ACTIVE).forEach(Runnable::run);
+        this.knownPseudo.get(StateManager.Model.ACTIVE).forEach(Runnable::run);
     }
 
     public Component active(Runnable runnable) {
         Set<Runnable> runnables;
-        if ((runnables = this.knownPseudo.get(Model.ACTIVE)) == null)
+        if ((runnables = this.knownPseudo.get(StateManager.Model.ACTIVE)) == null)
             runnables = new HashSet<>();
 
         runnables.add(runnable);
-        this.knownPseudo.put(Model.ACTIVE, runnables);
+        this.knownPseudo.put(StateManager.Model.ACTIVE, runnables);
         return this;
+    }
+
+    public StateManager getStateManager() {
+        return this.stateManager;
     }
 
     public Background background() {
         return this.background;
     }
 
-    public void repaint() {
-        this.getComponent().repaint();
-    }
+//    public void repaint() {
+//        if (!(this.getComponent() instanceof MiComponent))
+//            return;
+//
+//        MiComponent c = (MiComponent) this.getComponent();
+//
+//        this.getComponent().getGraphics().setColor(this.background().color());
+//        Graphics graphics = this.getComponent().getGraphics();
+//        graphics.setColor(this.background().color());
+//        this.component.setBackground(this.background.color());
+//    }
 
     public void recalculate() {
         this.height(this.height(true));

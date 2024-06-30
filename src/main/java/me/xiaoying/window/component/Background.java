@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Background implements Cloneable {
     private final Component component;
-    private Color color;
+    private Color color = Color.WHITE;
 
     public Background(Component component) {
         this.component = component;
