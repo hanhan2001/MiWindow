@@ -1,7 +1,6 @@
 package me.xiaoying.window.component;
 
 import me.xiaoying.window.Window;
-import me.xiaoying.window.awt.MiComponent;
 import me.xiaoying.window.event.component.ClickedComponentEvent;
 
 import java.awt.*;
@@ -12,47 +11,79 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 元素
+ * Component
  */
 public abstract class Component implements Cloneable {
     private String name = null;
     private Component parent = null;
     private Window window;
-    private final String normalSymbols = "[^a-zA-Z0-9%.]";
+    private final String specialSymbols = "[^a-zA-Z0-9%.]";
     private java.awt.Component component;
-    private int width = 0;
-    private String extraWidth = null;
-    private int height = 0;
-    private String extraHeight = null;
     private Background background = new Background(this);
     private StateManager stateManager = new StateManager(this);
     private EnumMap<StateManager.Model, Set<Runnable>> knownPseudo = new EnumMap<>(StateManager.Model.class);
+    private final AttributeManager attributeManager = new AttributeManager(this);
 
+    /**
+     * Get name for this component
+     *
+     * @return String
+     */
     public String name() {
-        return this.name;
+        return this.attributeManager.get(Attribute.NAME).toString();
     }
 
+    /**
+     * Set name for this component
+     *
+     * @param name String
+     * @return Component
+     */
     public Component name(String name) {
-        this.name = name;
+        this.attributeManager.set(Attribute.NAME, name);
         return this;
     }
 
+    /**
+     * Get width for this component
+     *
+     * @return Final width for this component
+     */
     public int width() {
         return this.getComponent().getWidth();
     }
 
+    /**
+     * Get width for this component
+     *
+     * @param extra get truth width for this component
+     * @return String
+     */
     public String width(boolean extra) {
-        if (!extra || this.extraWidth == null)
-            return this.width() + "px";
+        if (!extra || this.attributeManager.get(Attribute.WIDTH).toString() == null)
+            return this.getComponent().getWidth() + "px";
 
-        return this.extraWidth;
+        return this.attributeManager.get(Attribute.WIDTH).toString();
     }
 
+    /**
+     * Set width for this component<br>
+     * Support unit
+     * <ul>
+     *     <li>px</li>
+     *     <li>%</li>
+     *     <li>vw</li>
+     *     <li>vh</li>
+     * </ul>
+     *
+     * @param width Width
+     * @return Component
+     */
     public Component width(String width) {
         width = width.replace(" ", "");
 
         // 判断是否存在特殊符号
-        Pattern pattern = Pattern.compile(this.normalSymbols);
+        Pattern pattern = Pattern.compile(this.specialSymbols);
         Matcher matcher = pattern.matcher(width);
         if (matcher.find())
             throw new IllegalArgumentException("Unsupported height.");
@@ -127,36 +158,75 @@ public abstract class Component implements Cloneable {
                 break;
         }
 
-        this.extraWidth = width;
-        return this.width(number);
+        Component c = this.width(number);
+        this.attributeManager.set(Attribute.WIDTH, width);
+        return c;
     }
 
+    /**
+     * Set width for this component<br>
+     * Unit is px
+     *
+     * @param width Width
+     * @return Component
+     */
     private Component width(double width) {
         return this.width((int) width);
     }
 
+    /**
+     * Set width for this component<br>
+     * Unit is px
+     *
+     * @param width Width
+     * @return Component
+     */
     private Component width(int width) {
-        this.width = width;
+        this.attributeManager.set(Attribute.WIDTH, width);
         this.getComponent().setSize(width, this.getComponent().getHeight());
         return this;
     }
 
+    /**
+     * Get height for this component
+     *
+     * @return Integer
+     */
     public int height() {
         return this.getComponent().getHeight();
     }
 
+    /**
+     * Get height for this component
+     *
+     * @param extra get truth width for this component
+     * @return String
+     */
     public String height(boolean extra) {
-        if (!extra || this.extraHeight == null)
+        if (!extra || this.attributeManager.get(Attribute.HEIGHT).toString() == null)
             return this.width() + "px";
 
-        return this.extraHeight;
+        return this.attributeManager.get(Attribute.HEIGHT).toString();
     }
 
+    /**
+     * Set height for this component<br>
+     * Support unit
+     * <ul>
+     *     <li>px</li>
+     *     <li>%</li>
+     *     <li>vw</li>
+     *     <li>vh</li>
+     * </ul>
+     *
+     * @param height Height
+     * @return Component
+     */
     public Component height(String height) {
         height = height.replace(" ", "");
 
         // 判断是否存在特殊符号
-        Pattern pattern = Pattern.compile(this.normalSymbols);
+        Pattern pattern = Pattern.compile(this.specialSymbols);
         Matcher matcher = pattern.matcher(height);
         if (matcher.find())
             throw new IllegalArgumentException("Unsupported height.");
@@ -231,21 +301,41 @@ public abstract class Component implements Cloneable {
                 break;
         }
 
-        this.extraHeight = height;
-        return this.height(number);
+        Component c = this.height(number);
+        this.attributeManager.set(Attribute.HEIGHT, height);
+        return c;
     }
 
+    /**
+     * Set width for this component<br>
+     * Unit is px
+     *
+     * @param height Height
+     * @return Component
+     */
     private Component height(double height) {
         return this.height((int) height);
     }
 
+    /**
+     * Set width for this component<br>
+     * Unit is px
+     *
+     * @param height Height
+     * @return Component
+     */
     private Component height(int height) {
         height = height - 18;
         this.getComponent().setSize(this.getComponent().getWidth(), height);
-        this.height = height;
+        this.attributeManager.set(Attribute.HEIGHT, height);
         return this;
     }
 
+    /**
+     * Set parent for this component
+     *
+     * @param component Component
+     */
     public void setParent(Component component) {
         if (this.parent != null)
             return;
@@ -268,9 +358,9 @@ public abstract class Component implements Cloneable {
     }
 
     /**
-     * 根据 position 方式获取父级对象<br>
-     * 当 position 方式为 absolute 时将会定位到上级非 absolute 对象作为 position 定位的父级对象<br>
-     * 可以用 {@code component.position(PositionType.RELATIVE)} 更改父级元素的定位方式
+     * Obtain component base on position <br>
+     * get component which position isn't absolute if parent's position is absolute<br>
+     * {@code component.position(PositionType.RELATIVE)} can change location mode for parent component
      *
      * @return Component
      */
@@ -288,6 +378,11 @@ public abstract class Component implements Cloneable {
         return this.parent;
     }
 
+    /**
+     * Get component's window
+     *
+     * @return Window
+     */
     public Window getWindow() {
         return this.window;
     }
@@ -361,36 +456,43 @@ public abstract class Component implements Cloneable {
         return this.stateManager;
     }
 
+    /**
+     * Get background for this component
+     *
+     * @return Background
+     */
     public Background background() {
         return this.background;
     }
 
+    /**
+     * Recalculate something for this component
+     */
     public void recalculate() {
         this.height(this.height(true));
         this.width(this.width(true));
     }
 
+    /**
+     * Set visible for this component<br>
+     * {@code component.display(null)} same aas this method
+     *
+     * @param bool visible
+     */
     public void visible(boolean bool) {
         this.getComponent().setVisible(bool);
     }
 
-    protected java.awt.Component getComponent() {
-        return this.component;
+    /**
+     * Get attributes for this component
+     *
+     * @return Map
+     */
+    public AttributeManager getAttributes() {
+        return this.attributeManager;
     }
 
-    @Override
-    protected Component clone() {
-        Background background = new Background(this);
-
-        try {
-            Component component = (Component) super.clone();
-            component.name = this.name;
-            component.width = this.width;
-            component.height = this.height;
-            component.background = background;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
+    protected java.awt.Component getComponent() {
+        return this.component;
     }
 }
