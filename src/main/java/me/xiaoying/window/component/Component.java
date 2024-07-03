@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public abstract class Component implements Cloneable {
     private Component parent = null;
     private Window window;
-    private final String specialSymbols = "[^a-zA-Z0-9%.]";
+    protected final String specialSymbols = "[^a-zA-Z0-9%.]";
     private java.awt.Component component;
     private Background background = new Background(this);
     private StateManager stateManager = new StateManager(this);
