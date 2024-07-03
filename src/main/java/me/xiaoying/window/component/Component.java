@@ -307,7 +307,7 @@ public abstract class Component implements Cloneable {
                 break;
         }
 
-        Component c = this.height((int) number, false);
+        Component c = this.height((int) number - 18, false);
         this.attributeManager.set(Attribute.HEIGHT, height);
         return c;
     }
