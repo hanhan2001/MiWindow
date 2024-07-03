@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
  * Component
  */
 public abstract class Component implements Cloneable {
-    private String name = null;
     private Component parent = null;
     private Window window;
     private final String specialSymbols = "[^a-zA-Z0-9%.]";
