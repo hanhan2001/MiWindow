@@ -158,7 +158,7 @@ public abstract class Component implements Cloneable {
                 break;
         }
 
-        Component c = this.width(number);
+        Component c = this.width((int) number, false);
         this.attributeManager.set(Attribute.WIDTH, width);
         return c;
     }
@@ -182,8 +182,14 @@ public abstract class Component implements Cloneable {
      * @return Component
      */
     private Component width(int width) {
-        this.attributeManager.set(Attribute.WIDTH, width);
+        this.width(width, true);
+        return this;
+    }
+
+    private Component width(int width, boolean record) {
         this.getComponent().setSize(width, this.getComponent().getHeight());
+        if (record)
+            this.attributeManager.set(Attribute.WIDTH, width);
         return this;
     }
 
@@ -301,7 +307,7 @@ public abstract class Component implements Cloneable {
                 break;
         }
 
-        Component c = this.height(number);
+        Component c = this.height((int) number, false);
         this.attributeManager.set(Attribute.HEIGHT, height);
         return c;
     }
@@ -326,8 +332,14 @@ public abstract class Component implements Cloneable {
      */
     private Component height(int height) {
         height = height - 18;
+        this.height(height, true);
+        return this;
+    }
+
+    private Component height(int height, boolean record) {
         this.getComponent().setSize(this.getComponent().getWidth(), height);
-        this.attributeManager.set(Attribute.HEIGHT, height);
+        if (record)
+            this.attributeManager.set(Attribute.HEIGHT, height);
         return this;
     }
 
