@@ -36,7 +36,6 @@ public class AttributeManager {
         }
 
         this.attributes.put(attribute, object);
-//        this.component.recalculate();
     }
 
     /**
