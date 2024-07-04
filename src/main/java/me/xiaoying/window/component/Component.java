@@ -477,6 +477,28 @@ public abstract class Component implements Cloneable {
     }
 
     /**
+     * Set color of characters for this Component
+     *
+     * @param color Color of java.awt
+     * @return Component
+     */
+    public Component color(Color color) {
+        this.component.setForeground(color);
+        this.attributeManager.set(Attribute.COLOR, color);
+        return this;
+    }
+
+    /**
+     * Set color of characters for this Component
+     *
+     * @param color Color of me.xiaoying.window
+     * @return Component
+     */
+    public Component color(me.xiaoying.window.Color color) {
+        return this.color(color.toAWTColor());
+    }
+
+    /**
      * Recalculate something for this component
      */
     public void recalculate() {
