@@ -15,26 +15,26 @@ public class MiButton extends JButton implements MiComponent {
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void paint(Graphics graphics) {
         if (!this.getModel().isPressed() && !this.getModel().isRollover()) {
             this.button.getStateManager().setModel(StateManager.Model.NORMAL);
-            g.setColor(Color.WHITE);
+            this.button.getAttributes().repaint(graphics);
         }
 
         // 采用 else if，避免出现既是 active 又是 hover
         if (this.getModel().isPressed()) {
             this.button.getStateManager().setModel(StateManager.Model.ACTIVE);
-            g.setColor(this.button.background().color());
+            this.button.getAttributes().repaint(graphics);
         } else if (this.getModel().isRollover()) {
             this.button.getStateManager().setModel(StateManager.Model.HOVER);
-            g.setColor(this.button.background().color());
+            this.button.getAttributes().repaint(graphics);
         }
-        g.fillRect(0, 0, getWidth(), getHeight());
-        super.paint(g);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
+        super.paint(graphics);
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
     }
 }

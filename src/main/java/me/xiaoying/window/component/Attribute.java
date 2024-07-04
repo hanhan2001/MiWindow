@@ -10,7 +10,9 @@ public enum Attribute implements Cloneable {
     WIDTH("width"),
     HEIGHT("height"),
     COLOR("color"),
-    BACKGROUND_COLOR("background_color");
+    BACKGROUND_COLOR("background_color"),
+    FONT_SIZE("font_size"),
+    FONT_FAMILY("font_family");
 
     private final String name;
 
@@ -29,6 +31,8 @@ public enum Attribute implements Cloneable {
         map.put(HEIGHT, 0);
         map.put(COLOR, Color.BLACK);
         map.put(BACKGROUND_COLOR, Color.WHITE);
+        map.put(FONT_SIZE, 12);
+        map.put(FONT_FAMILY, "Microsoft YaHei");
         return map;
     }
 

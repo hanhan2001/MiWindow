@@ -1,8 +1,8 @@
 package me.xiaoying.window.component;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Component attribute manager
@@ -58,5 +58,42 @@ public class AttributeManager {
         Map<String, Object> map = new HashMap<>();
         this.attributes.forEach((attribute, object) -> map.put(attribute.getName(), object));
         return map;
+    }
+
+    public void repaint(Graphics graphics) {
+        this.attributes.forEach((key, attribute) -> {
+            if (attribute == null)
+                return;
+
+            switch (key) {
+                case NAME: {
+                    this.component.name(attribute.toString());
+                    break;
+                }
+                case WIDTH: {
+                    this.component.width(attribute.toString());
+                    break;
+                }
+                case HEIGHT: {
+                    this.component.height(attribute.toString());
+                    break;
+                }
+                case BACKGROUND_COLOR: {
+                    if (attribute instanceof me.xiaoying.window.Color)
+                        graphics.setColor(((me.xiaoying.window.Color) attribute).toAWTColor());
+                    else
+                        graphics.setColor((Color) attribute);
+                    break;
+                }
+                case COLOR: {
+//                    Font font = new Font("Microsoft YaHei",  Font.PLAIN, 12);
+                    if (attribute instanceof me.xiaoying.window.Color)
+                        this.component.getComponent().setForeground(((me.xiaoying.window.Color) attribute).toAWTColor());
+                    else
+                        this.component.getComponent().setForeground((Color) attribute);
+                    break;
+                }
+            }
+        });
     }
 }
