@@ -32,9 +32,4 @@ public class MiButton extends JButton implements MiComponent {
         graphics.fillRect(0, 0, getWidth(), getHeight());
         super.paint(graphics);
     }
-
-    @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-    }
 }
