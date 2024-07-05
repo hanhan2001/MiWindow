@@ -59,6 +59,10 @@ public class AttributeManager {
         return map;
     }
 
+    public void repaint() {
+        this.repaint(null);
+    }
+
     public void repaint(Graphics graphics) {
         this.attributes.forEach((key, attribute) -> {
             if (attribute == null)
@@ -78,14 +82,25 @@ public class AttributeManager {
                     break;
                 }
                 case BACKGROUND_COLOR: {
-                    if (attribute instanceof me.xiaoying.window.Color)
+                    if (attribute instanceof me.xiaoying.window.Color) {
+                        if (graphics == null) {
+                            this.component.getComponent().setBackground(((me.xiaoying.window.Color) attribute).toAWTColor());
+                            return;
+                        }
+
                         graphics.setColor(((me.xiaoying.window.Color) attribute).toAWTColor());
-                    else
+                    }
+                    else {
+                        if (graphics == null) {
+                            this.component.getComponent().setBackground((Color) attribute);
+                            return;
+                        }
+
                         graphics.setColor((Color) attribute);
+                    }
                     break;
                 }
                 case COLOR: {
-//                    Font font = new Font("Microsoft YaHei",  Font.PLAIN, 12);
                     if (attribute instanceof me.xiaoying.window.Color)
                         this.component.getComponent().setForeground(((me.xiaoying.window.Color) attribute).toAWTColor());
                     else
