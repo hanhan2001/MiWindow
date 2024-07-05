@@ -88,7 +88,6 @@ public enum Color {
     PLUM("DDA0DD", "221160221", null),
     PURPLISH_RED("FF00FF", "255000255", null),
     ORCHID("DA70D6", "218112214", null),
-    //
     LIGHT_PURPLE_RED("C71585", "199021113", null),
     DARK_PINK("DB7093", "219112147", null),
     BRIGHT_PINK("FF1493", "255020147", null),
