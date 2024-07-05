@@ -28,8 +28,10 @@ public abstract class Container extends Component {
             return;
 
         component.setParent(this);
+        System.out.println(this.knownComponent.size());
+        System.out.println(-this.knownComponent.size());
+        ((java.awt.Container) this.getComponent()).add(component.getComponent(), 0);
         this.knownComponent.add(component);
-        ((java.awt.Container) this.getComponent()).add(component.getComponent());
         this.getComponent().repaint();
     }
 

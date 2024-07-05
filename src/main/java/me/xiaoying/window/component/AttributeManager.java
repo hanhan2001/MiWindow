@@ -32,7 +32,7 @@ public class AttributeManager {
         }
 
         if (this.attributes.get(attribute).toString().equalsIgnoreCase(object.toString())) {
-            System.out.println(12356);
+//            System.out.println(12356);
         }
 
         this.attributes.put(attribute, object);
