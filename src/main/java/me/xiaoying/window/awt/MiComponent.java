@@ -4,8 +4,4 @@ import java.awt.*;
 
 public interface MiComponent {
     void paint(Graphics g);
-
-    void paintComponent(Graphics g);
-
-    void paintComponents(Graphics g);
 }
