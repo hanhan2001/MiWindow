@@ -156,7 +156,7 @@ public enum Color {
 
     public java.awt.Color toAWTColor() {
         if (this.awtColor == null)
-            return java.awt.Color.getHSBColor(Float.parseFloat(this.decimal.substring(1, 3)), Float.parseFloat(this.decimal.substring(4, 6)), Float.parseFloat(this.decimal.substring(7,9)));
+            return new java.awt.Color(Integer.parseInt(this.decimal.substring(0, 3)), Integer.parseInt(this.decimal.substring(3, 6)), Integer.parseInt(this.decimal.substring(6, 9)));
         return this.awtColor;
     }
 }
