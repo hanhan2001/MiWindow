@@ -1,12 +1,14 @@
 package me.xiaoying.window.component;
 
-import me.xiaoying.window.awt.MiPanel;
+import me.xiaoying.window.awt.MiButton;
+
+import java.awt.*;
 
 public class Div extends Container {
-    private final MiPanel miPanel = new MiPanel(this);
+    private final MiButton component = new MiButton(this);
 
     public Div(String name) {
-        this.setComponent(this.miPanel);
+        this.setComponent(this.component);
 
         this.name(name);
 
@@ -14,7 +16,7 @@ public class Div extends Container {
     }
 
     public Div(int width, int height) {
-        this.setComponent(this.miPanel);
+        this.setComponent(this.component);
 
         this.width(width + "px");
         this.height(height + "px");
@@ -23,7 +25,7 @@ public class Div extends Container {
     }
 
     public Div(String name, int width, int height) {
-        this.setComponent(this.miPanel);
+        this.setComponent(this.component);
 
         this.name(name);
         this.width(width + "px");
@@ -33,6 +35,12 @@ public class Div extends Container {
     }
 
     public void init() {
+        this.component.setBorder(null);
+        this.component.setFocusPainted(false);
+        this.component.setBorderPainted(false);
+        this.component.setMargin(new Insets(0, 0, 0, 0));
 
+        this.component.repaint();
+        this.component.setVisible(true);
     }
 }
