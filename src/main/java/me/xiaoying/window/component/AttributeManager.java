@@ -24,11 +24,6 @@ public class AttributeManager {
      * @param object Value
      */
     public void set(Attribute attribute, Object object) {
-        System.out.println("--------------");
-        System.out.println("Attr: " + attribute.getName());
-        System.out.println("Value: " + object);
-        System.out.println("Normal: " + this.normalAttributes.get(Attribute.BACKGROUND_COLOR));
-
         if (this.attributes.get(attribute) == null || object == null) {
             this.attributes.put(attribute, object);
             this.component.recalculate();
