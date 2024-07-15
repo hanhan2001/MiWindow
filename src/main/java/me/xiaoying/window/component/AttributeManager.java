@@ -35,14 +35,13 @@ public class AttributeManager {
             return;
         }
 
-        if (this.attributes.get(attribute).toString().equalsIgnoreCase(object.toString())) {
-//            System.out.println(12356);
-        }
-
         this.lastModel = this.component.getStateManager().getModel();
         this.attributes.put(attribute, object);
     }
 
+    /**
+     * Copy attribute for last state
+     */
     public void copy() {
         if (this.component.getStateManager().getModel() != StateManager.Model.NORMAL && this.normalAttributes.isEmpty()) {
             this.normalAttributes.putAll(this.attributes);
