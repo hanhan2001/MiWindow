@@ -30,6 +30,7 @@ public class StateManager {
             return;
 
         this.model = model;
+        this.component.getAttributes().copy();
         switch (this.model) {
             case NORMAL:
                 break;

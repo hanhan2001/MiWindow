@@ -9,7 +9,9 @@ import java.util.Map;
  */
 public class AttributeManager {
     private final Component component;
-    private final Map<Attribute, Object> attributes = Attribute.getDefaultAttribute();
+    private Map<Attribute, Object> attributes = Attribute.getDefaultAttribute();
+    private Map<Attribute, Object> normalAttributes = new HashMap<>();
+    private StateManager.Model lastModel = StateManager.Model.NORMAL;
 
     public AttributeManager(Component component) {
         this.component = component;
@@ -25,6 +27,8 @@ public class AttributeManager {
         System.out.println("--------------");
         System.out.println("Attr: " + attribute.getName());
         System.out.println("Value: " + object);
+        System.out.println("Normal: " + this.normalAttributes.get(Attribute.BACKGROUND_COLOR));
+
         if (this.attributes.get(attribute) == null || object == null) {
             this.attributes.put(attribute, object);
             this.component.recalculate();
@@ -35,7 +39,19 @@ public class AttributeManager {
 //            System.out.println(12356);
         }
 
+        this.lastModel = this.component.getStateManager().getModel();
         this.attributes.put(attribute, object);
+    }
+
+    public void copy() {
+        if (this.component.getStateManager().getModel() != StateManager.Model.NORMAL && this.normalAttributes.isEmpty()) {
+            this.normalAttributes.putAll(this.attributes);
+        }
+
+        if (this.component.getStateManager().getModel() == StateManager.Model.NORMAL && this.lastModel != StateManager.Model.NORMAL) {
+            this.attributes.clear();
+            this.attributes.putAll(this.normalAttributes);
+        }
     }
 
     /**
