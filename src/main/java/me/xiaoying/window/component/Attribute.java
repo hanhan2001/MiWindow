@@ -18,7 +18,8 @@ public enum Attribute implements Cloneable {
     RIGHT("right"),
     TOP("top"),
     BOTTOM("bottom"),
-    DISPLAY("display");
+    DISPLAY("display"),
+    TEXT("text");
 
     private final String name;
 
@@ -45,6 +46,7 @@ public enum Attribute implements Cloneable {
         map.put(TOP, 0);
         map.put(BOTTOM, 0);
         map.put(DISPLAY, "block");
+        map.put(TEXT, "");
         return map;
     }
 
