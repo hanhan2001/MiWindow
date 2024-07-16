@@ -77,14 +77,4 @@ public class Button extends Component {
         else
             this.height(super.height(true));
     }
-
-    public String text() {
-        return this.miButton.getText();
-    }
-
-    public Button text(String text) {
-        this.miButton.setText(text);
-        this.recalculate();
-        return this;
-    }
 }
