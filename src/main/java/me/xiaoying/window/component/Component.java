@@ -498,6 +498,34 @@ public abstract class Component implements Cloneable {
         return this.color(color.toAWTColor());
     }
 
+    /**
+     * Set component's display type<br>
+     * <ul>
+     *     <li>block</li>
+     *     <li>flex</li>
+     *     <li>null</li>
+     * </ul>
+     *
+     * @param display String
+     * @return Component
+     */
+    public Component display(String display) {
+        this.attributeManager.set(Attribute.DISPLAY, display);
+        return this;
+    }
+
+    /**
+     * Set component's position type<br>
+     * <ul>
+     *     <li>static</li>
+     *     <li>relative</li>
+     *     <li>absolute</li>
+     *     <li>fixed</li>
+     * </ul>
+     *
+     * @param position String
+     * @return Component
+     */
     public Component position(String position) {
         this.attributeManager.set(Attribute.POSITION, position);
         return this;
