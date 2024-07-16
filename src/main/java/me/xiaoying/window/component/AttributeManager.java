@@ -157,6 +157,10 @@ public class AttributeManager {
 //                    }
                     break;
                 }
+                case TEXT: {
+                    this.component.text(this.attributes.get(Attribute.TEXT).toString());
+                    break;
+                }
             }
         });
     }

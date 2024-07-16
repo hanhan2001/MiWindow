@@ -18,7 +18,7 @@ public class Background implements Cloneable {
 
     public Background color(me.xiaoying.window.Color color) {
         this.color = color.toAWTColor();
-        this.component.getAttributes().set(Attribute.BACKGROUND_COLOR, color.toAWTColor());
+        this.component.getAttributes().set(Attribute.BACKGROUND_COLOR, this.color);
         return this;
     }
 
