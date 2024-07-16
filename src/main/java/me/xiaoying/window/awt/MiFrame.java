@@ -16,7 +16,6 @@ public class MiFrame extends JFrame {
 
     @Override
     public void paint(Graphics g) {
-//        this.window.getAttributes().repaint(g);
         if (this.window.getAttributes().get(Attribute.DISPLAY).toString().equalsIgnoreCase("null"))
             this.window.visible(false);
 
