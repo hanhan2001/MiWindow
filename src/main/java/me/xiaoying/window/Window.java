@@ -1,5 +1,6 @@
 package me.xiaoying.window;
 
+import me.xiaoying.window.awt.MiFrame;
 import me.xiaoying.window.component.Component;
 import me.xiaoying.window.component.Container;
 import me.xiaoying.window.event.EventManager;
@@ -16,12 +17,12 @@ import java.awt.event.WindowListener;
 import java.util.Enumeration;
 
 public class Window extends Container {
-    private final JFrame jFrame;
+    private final MiFrame miFrame;
     private final EventManager eventManager = new EventManager();
 
     public Window() {
-        this.jFrame = new JFrame();
-        this.setComponent(this.jFrame);
+        this.miFrame = new MiFrame(this);
+        this.setComponent(this.miFrame);
 
         this.width(500);
         this.height(300);
@@ -30,8 +31,9 @@ public class Window extends Container {
     }
 
     public Window(String title) {
-        this.jFrame = new JFrame(title);
-        this.setComponent(this.jFrame);
+        this.miFrame = new MiFrame(this);
+        this.miFrame.setTitle(title);
+        this.setComponent(this.miFrame);
 
         this.width(500);
         this.height(300);
@@ -40,8 +42,8 @@ public class Window extends Container {
     }
 
     public Window(int width, int height) {
-        this.jFrame = new JFrame();
-        this.setComponent(this.jFrame);
+        this.miFrame = new MiFrame(this);
+        this.setComponent(this.miFrame);
 
         this.width(width);
         this.height(height);
@@ -50,8 +52,9 @@ public class Window extends Container {
     }
 
     public Window(String title, int width, int height) {
-        this.jFrame = new JFrame(title);
-        this.setComponent(this.jFrame);
+        this.miFrame = new MiFrame(this);
+        this.miFrame.setTitle(title);
+        this.setComponent(this.miFrame);
 
         this.width(width);
         this.height(height);
@@ -60,7 +63,7 @@ public class Window extends Container {
     }
 
     private void init() {
-        this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.miFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // default fort for component
         FontUIResource fontRes = new FontUIResource(new Font("Microsoft YaHei", Font.PLAIN, 12));
@@ -72,10 +75,10 @@ public class Window extends Container {
                 UIManager.put(key, fontRes);
         }
 
-        this.jFrame.setLayout(null);
-        this.jFrame.setVisible(true);
+        this.miFrame.setLayout(null);
+        this.miFrame.setVisible(true);
 
-        this.jFrame.addComponentListener(new ComponentAdapter() {
+        this.miFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 eventManager.callEvent(new WindowResizedEvent(getWindow(), e.getComponent().getWidth(), e.getComponent().getHeight()));
@@ -83,7 +86,7 @@ public class Window extends Container {
             }
         });
 
-        this.jFrame.addWindowListener(new WindowListener() {
+        this.miFrame.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
 //                eventManager.callEvent(new W);
@@ -131,7 +134,7 @@ public class Window extends Container {
     }
 
     public Window resizable(boolean bool) {
-        this.jFrame.setResizable(bool);
+        this.miFrame.setResizable(bool);
         return this;
     }
 
@@ -145,11 +148,11 @@ public class Window extends Container {
     }
 
     public String title() {
-        return this.jFrame.getTitle();
+        return this.miFrame.getTitle();
     }
 
     public Component title(String title) {
-        this.jFrame.setTitle(title);
+        this.miFrame.setTitle(title);
         return this;
     }
 

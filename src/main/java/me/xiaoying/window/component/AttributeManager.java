@@ -99,8 +99,7 @@ public class AttributeManager {
                         }
 
                         graphics.setColor(((me.xiaoying.window.Color) attribute).toAWTColor());
-                    }
-                    else {
+                    } else {
                         if (graphics == null) {
                             this.component.getComponent().setBackground((Color) attribute);
                             return;
@@ -115,6 +114,47 @@ public class AttributeManager {
                         this.component.getComponent().setForeground(((me.xiaoying.window.Color) attribute).toAWTColor());
                     else
                         this.component.getComponent().setForeground((Color) attribute);
+                    break;
+                }
+                case POSITION: {
+                    if (this.get(Attribute.POSITION).toString().equalsIgnoreCase("static")) {
+
+                    }
+                    if (this.get(Attribute.POSITION).toString().equalsIgnoreCase("relative")) {
+
+                    }
+                    if (this.get(Attribute.POSITION).toString().equalsIgnoreCase("absolute")) {
+
+                    }
+                    if (this.get(Attribute.POSITION).toString().equalsIgnoreCase("fixed")) {
+
+                    }
+                    break;
+                }
+                case DISPLAY: {
+                    if (this.get(Attribute.DISPLAY).toString().equalsIgnoreCase("null"))
+                        this.component.visible(false);
+
+                    if (!(this.component instanceof Container))
+                        return;
+
+                    Container container = (Container) this.component;
+                    if (this.get(Attribute.DISPLAY).toString().equalsIgnoreCase("block")) {
+                        System.out.println(this.component.getAttributes().get(Attribute.NAME));
+                        System.out.println(1235);
+                        for (int i = 0; i < container.getChildren().size(); i++) {
+                            if (i == 0) {
+                                container.getChildren().get(i).getComponent().setLocation(0, 0);
+                                continue;
+                            }
+
+                            Component last = container.getChildren().get(i - 1);
+                            container.getChildren().get(i).getComponent().setLocation(0, (int) (last.getComponent().getLocation().getY() + last.getComponent().getHeight()));
+                        }
+                    }
+//                    if (this.get(Attribute.DISPLAY).toString().equalsIgnoreCase("flex")) {
+//
+//                    }
                     break;
                 }
             }

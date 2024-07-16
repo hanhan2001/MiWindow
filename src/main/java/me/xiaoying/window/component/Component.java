@@ -498,6 +498,11 @@ public abstract class Component implements Cloneable {
         return this.color(color.toAWTColor());
     }
 
+    public Component position(String position) {
+        this.attributeManager.set(Attribute.POSITION, position);
+        return this;
+    }
+
     /**
      * Recalculate something for this component
      */
@@ -525,7 +530,7 @@ public abstract class Component implements Cloneable {
         return this.attributeManager;
     }
 
-    protected java.awt.Component getComponent() {
+    public java.awt.Component getComponent() {
         return this.component;
     }
 }
