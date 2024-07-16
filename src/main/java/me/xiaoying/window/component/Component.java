@@ -1,6 +1,7 @@
 package me.xiaoying.window.component;
 
 import me.xiaoying.window.Window;
+import me.xiaoying.window.awt.MiButton;
 import me.xiaoying.window.event.component.ClickedComponentEvent;
 
 import java.awt.*;
@@ -339,6 +340,31 @@ public abstract class Component implements Cloneable {
         this.getComponent().setSize(this.getComponent().getWidth(), height);
         if (record)
             this.attributeManager.set(Attribute.HEIGHT, height);
+        return this;
+    }
+
+    /**
+     * Get text for this component
+     *
+     * @return String
+     */
+    public String text() {
+        return this.attributeManager.get(Attribute.TEXT).toString();
+    }
+
+    /**
+     * Set text to component
+     *
+     * @param text String
+     * @return Component
+     */
+    public Component text(String text) {
+        if (!(this.component instanceof MiButton))
+            return this;
+
+        MiButton miButton = (MiButton) this.component;
+        miButton.setText(text);
+        this.attributeManager.set(Attribute.TEXT, text);
         return this;
     }
 
