@@ -38,11 +38,11 @@ public class AttributeManager {
      * Copy attribute for last state
      */
     public void copy() {
-        if (this.component.getStateManager().getModel() != StateManager.Model.NORMAL && this.normalAttributes.isEmpty()) {
+        if (this.component.getStateManager().getModel() != StateManager.Model.NORMAL && this.normalAttributes.isEmpty())
             this.normalAttributes.putAll(this.attributes);
-        }
 
-        if (this.component.getStateManager().getModel() == StateManager.Model.NORMAL && this.lastModel != StateManager.Model.NORMAL) {
+        if ((this.lastModel != this.component.getStateManager().getModel() && this.component.getStateManager().getModel() != StateManager.Model.NORMAL) ||
+                (this.component.getStateManager().getModel() == StateManager.Model.NORMAL && this.lastModel != StateManager.Model.NORMAL)) {
             this.attributes.clear();
             this.attributes.putAll(this.normalAttributes);
         }
