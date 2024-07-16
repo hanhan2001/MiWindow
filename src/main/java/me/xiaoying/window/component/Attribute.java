@@ -12,7 +12,12 @@ public enum Attribute implements Cloneable {
     COLOR("color"),
     BACKGROUND_COLOR("background_color"),
     FONT_SIZE("font_size"),
-    FONT_FAMILY("font_family");
+    FONT_FAMILY("font_family"),
+    POSITION("position"),
+    LEFT("left"),
+    RIGHT("right"),
+    TOP("top"),
+    BOTTOM("bottom");
 
     private final String name;
 
@@ -33,6 +38,11 @@ public enum Attribute implements Cloneable {
         map.put(BACKGROUND_COLOR, Color.WHITE);
         map.put(FONT_SIZE, 12);
         map.put(FONT_FAMILY, "Microsoft YaHei");
+        map.put(POSITION, "static");
+        map.put(LEFT, 0);
+        map.put(RIGHT, 0);
+        map.put(TOP, 0);
+        map.put(BOTTOM, 0);
         return map;
     }
 
