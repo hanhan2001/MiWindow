@@ -61,7 +61,7 @@ public enum Attribute implements Cloneable {
             case "NULL":
                 component.visible(false);
                 break;
-            case "BLOCK":
+            case "BLOCK": {
                 if (!(component instanceof Container))
                     break;
 
@@ -76,7 +76,21 @@ public enum Attribute implements Cloneable {
                     container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) (last.getComponent().getLocation().getY() + last.getComponent().getHeight()));
                 }
                 break;
+            }
             case "FLEX": {
+                if (!(component instanceof Container))
+                    break;
+
+                Container container = (Container) component;
+                for (int i = 0; i < container.getChildren().size(); i++) {
+                    if (i == 0) {
+                        container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) container.getComponent().getLocation().getY());
+                        continue;
+                    }
+
+                    Component last = container.getChildren().get(i - 1);
+                    container.getChildren().get(i).getComponent().setLocation((int) last.getComponent().getLocation().getX() + last.getComponent().getWidth(), (int) (component.getComponent().getLocation().getY()));
+                }
                 break;
             }
         }
