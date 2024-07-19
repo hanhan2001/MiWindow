@@ -30,7 +30,11 @@ public abstract class Component implements Cloneable {
      * @return String
      */
     public String name() {
-        return this.attributeManager.get(Attribute.NAME).toString();
+        Object object = this.attributeManager.get(Attribute.NAME);
+        if (object == null)
+            return null;
+        else
+            return object.toString();
     }
 
     /**
