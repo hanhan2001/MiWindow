@@ -57,7 +57,6 @@ public enum Attribute implements Cloneable {
     BOTTOM("bottom", ((component, graphics, attributeValue) -> {})),
     DISPLAY("display", ((component, graphics, attributeValue) -> {
         String type = attributeValue.toString();
-        System.out.println(component.name());
         switch (type.toUpperCase(Locale.ENGLISH)) {
             case "NULL":
                 component.visible(false);
