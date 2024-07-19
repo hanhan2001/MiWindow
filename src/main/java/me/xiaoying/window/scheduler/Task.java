@@ -36,7 +36,7 @@ public class Task {
     }
 
     public boolean ready() {
-        return new Date().getTime() - this.runTime.getTime() >= this.delay;
+        return new Date().getTime() - this.runTime.getTime() >= this.delay * 50;
     }
 
     public void setRunTime(Date runtime) {
@@ -54,6 +54,7 @@ public class Task {
     public void run() {
         this.runnable.run();
         this.finish = true;
+        this.runTime = new Date();
     }
 
     public enum TaskType {

@@ -10,12 +10,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Scheduler
  */
-public class ServerScheduler implements Scheduler {
+public class SchedulerManager implements Scheduler {
     private final ScheduledExecutorService executors = Executors.newScheduledThreadPool(200);
     private final Map<Integer, Task> knownTask = new HashMap<>();
     private Thread thread;
 
-    public ServerScheduler() {
+    public SchedulerManager() {
         this.initialize();
     }
 
