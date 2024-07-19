@@ -16,20 +16,7 @@ public class MiFrame extends JFrame {
 
     @Override
     public void paint(Graphics g) {
-        if (this.window.getAttributes().get(Attribute.DISPLAY).toString().equalsIgnoreCase("null"))
-            this.window.visible(false);
-
-        if (this.window.getAttributes().get(Attribute.DISPLAY).toString().equalsIgnoreCase("block")) {
-            for (int i = 0; i < this.window.getChildren().size(); i++) {
-                if (i == 0) {
-                    this.window.getChildren().get(i).getComponent().setLocation(0, 0);
-                    continue;
-                }
-
-                Component last = this.window.getChildren().get(i - 1);
-                this.window.getChildren().get(i).getComponent().setLocation(0, (int) (last.getComponent().getLocation().getY() + last.getComponent().getHeight()));
-            }
-        }
+        Attribute.DISPLAY.run(this.window, g, this.window.getAttributes().get(Attribute.DISPLAY));
         super.paint(g);
     }
 }
