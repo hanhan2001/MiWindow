@@ -2,7 +2,6 @@ package me.xiaoying.window.awt;
 
 import me.xiaoying.window.Window;
 import me.xiaoying.window.component.Attribute;
-import me.xiaoying.window.component.Component;
 
 import javax.swing.*;
 import java.awt.*;
