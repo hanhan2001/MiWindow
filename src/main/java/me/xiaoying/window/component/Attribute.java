@@ -10,14 +10,14 @@ import java.util.Map;
 public enum Attribute implements Cloneable {
     NAME("name", (component, graphics, attributeValue) -> component.name(attributeValue.toString())),
     WIDTH("width", (component, graphics, attributeValue) -> component.width(attributeValue.toString())),
-    HEIGHT("height", ((component, graphics, attributeValue) -> component.height(attributeValue.toString()))),
-    COLOR("color", ((component, graphics, attributeValue) -> {
+    HEIGHT("height", (component, graphics, attributeValue) -> component.height(attributeValue.toString())),
+    COLOR("color", (component, graphics, attributeValue) -> {
         if (attributeValue instanceof Color)
             component.getComponent().setForeground(((Color) attributeValue).toAWTColor());
         else
             component.getComponent().setForeground((java.awt.Color) attributeValue);
-    })),
-    BACKGROUND_COLOR("background_color", ((component, graphics, attributeValue) -> {
+    }),
+    BACKGROUND_COLOR("background_color", (component, graphics, attributeValue) -> {
         if (attributeValue instanceof me.xiaoying.window.Color) {
             if (graphics == null) {
                 component.getComponent().setBackground(((Color) attributeValue).toAWTColor());
@@ -34,10 +34,10 @@ public enum Attribute implements Cloneable {
         }
 
         graphics.setColor((java.awt.Color) attributeValue);
-    })),
-    FONT_SIZE("font_size", ((component, graphics, attributeValue) -> {})),
-    FONT_FAMILY("font_family", ((component, graphics, attributeValue) -> {})),
-    POSITION("position", ((component, graphics, attributeValue) -> {
+    }),
+    FONT_SIZE("font_size", (component, graphics, attributeValue) -> {}),
+    FONT_FAMILY("font_family", (component, graphics, attributeValue) -> {}),
+    POSITION("position", (component, graphics, attributeValue) -> {
         if (attributeValue.toString().equalsIgnoreCase("static")) {
 
         }
@@ -50,12 +50,12 @@ public enum Attribute implements Cloneable {
         if (attributeValue.toString().equalsIgnoreCase("fixed")) {
 
         }
-    })),
-    LEFT("left", ((component, graphics, attributeValue) -> {})),
-    RIGHT("right", ((component, graphics, attributeValue) -> {})),
-    TOP("top", ((component, graphics, attributeValue) -> {})),
-    BOTTOM("bottom", ((component, graphics, attributeValue) -> {})),
-    DISPLAY("display", ((component, graphics, attributeValue) -> {
+    }),
+    LEFT("left", (component, graphics, attributeValue) -> {}),
+    RIGHT("right", (component, graphics, attributeValue) -> {}),
+    TOP("top", (component, graphics, attributeValue) -> {}),
+    BOTTOM("bottom", (component, graphics, attributeValue) -> {}),
+    DISPLAY("display", (component, graphics, attributeValue) -> {
         String type = attributeValue.toString();
         switch (type.toUpperCase(Locale.ENGLISH)) {
             case "NULL":
@@ -94,8 +94,8 @@ public enum Attribute implements Cloneable {
                 break;
             }
         }
-    })),
-    TEXT("text", ((component, graphics, attributeValue) -> component.text(attributeValue.toString())));
+    }),
+    TEXT("text", (component, graphics, attributeValue) -> component.text(attributeValue.toString()));
 
     private final String name;
     private final AttributeHandle attributeHandle;
