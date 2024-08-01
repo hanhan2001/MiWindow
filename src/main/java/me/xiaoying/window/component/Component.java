@@ -84,84 +84,7 @@ public abstract class Component implements Cloneable {
      * @return Component
      */
     public Component width(String width) {
-        width = width.replace(" ", "");
-
-        // 判断是否存在特殊符号
-        Pattern pattern = Pattern.compile(this.specialSymbols);
-        Matcher matcher = pattern.matcher(width);
-        if (matcher.find())
-            throw new IllegalArgumentException("Unsupported height.");
-
-        StringBuilder numberOfString = new StringBuilder();
-        StringBuilder unit = new StringBuilder();
-
-        // 处理传递参数
-        boolean matchNumber = true;
-        for (String s : width.split("")) {
-            // 判断匹配模式
-            if (!matchNumber) {
-                unit.append(s);
-                continue;
-            }
-
-            try {
-                Integer.parseInt(s);
-            } catch (Exception e) {
-                matchNumber = false;
-                if (s.equalsIgnoreCase("."))
-                    continue;
-
-                unit.append(s);
-                continue;
-            }
-
-            numberOfString.append(s);
-        }
-
-        // 判断是否不存在任何长度数字
-        if (numberOfString.length() == 0)
-            return this;
-
-        double number = 0;
-        // 根据传递单位处理高度
-        switch (unit.toString().toUpperCase(Locale.ENGLISH)) {
-            case "":
-            case "PX":
-                number = Double.parseDouble(numberOfString.toString());
-                break;
-            case "%":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                // 处理其他对象
-                // 若当前对象定位方式为 absolute 时根据上级非 absolute 定位方式元素计算
-                number = this.getParent().width() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-            // 根据窗口宽的百分比设置
-            case "VW":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                number = this.window.width() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-            // 根据窗口高的百分比设置
-            case "VH":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                number = this.window.height() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-        }
-
+        double number = this.calculator(width, "ENDWAYS", false);
         Component c = this.width((int) number, false);
         this.attributeManager.set(Attribute.WIDTH, width);
         return c;
@@ -233,84 +156,7 @@ public abstract class Component implements Cloneable {
      * @return Component
      */
     public Component height(String height) {
-        height = height.replace(" ", "");
-
-        // 判断是否存在特殊符号
-        Pattern pattern = Pattern.compile(this.specialSymbols);
-        Matcher matcher = pattern.matcher(height);
-        if (matcher.find())
-            throw new IllegalArgumentException("Unsupported height.");
-
-        StringBuilder numberOfString = new StringBuilder();
-        StringBuilder unit = new StringBuilder();
-
-        // 处理传递参数
-        boolean matchNumber = true;
-        for (String s : height.split("")) {
-            // 判断匹配模式
-            if (!matchNumber) {
-                unit.append(s);
-                continue;
-            }
-
-            try {
-                Integer.parseInt(s);
-            } catch (Exception e) {
-                matchNumber = false;
-                if (s.equalsIgnoreCase("."))
-                    continue;
-
-                unit.append(s);
-                continue;
-            }
-
-            numberOfString.append(s);
-        }
-
-        // 判断是否不存在任何长度数字
-        if (numberOfString.length() == 0)
-            return this;
-
-        double number = 0;
-        // 根据传递单位处理高度
-        switch (unit.toString().toUpperCase(Locale.ENGLISH)) {
-            case "":
-            case "PX":
-                number = Double.parseDouble(numberOfString.toString());
-                break;
-            case "%":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                // 处理其他对象
-                // 若当前对象定位方式为 absolute 时根据上级非 absolute 定位方式元素计算
-                number = this.getParent().height() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-            // 根据窗口宽的百分比设置
-            case "VW":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                number = this.window.width() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-            // 根据窗口高的百分比设置
-            case "VH":
-                // 处理特殊对象
-                if (this instanceof Window) {
-                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-                    number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
-                    break;
-                }
-                number = this.window.height() * Double.parseDouble(numberOfString.toString()) / 100;
-                break;
-        }
-
+        double number = this.calculator(height, "HORIZONTAL", false);;
         Component c = this.height((int) number - 18, false);
         this.attributeManager.set(Attribute.HEIGHT, height);
         return c;
@@ -580,6 +426,15 @@ public abstract class Component implements Cloneable {
     }
 
     /**
+     * Get position type of the component
+     *
+     * @return String
+     */
+    public String position() {
+        return this.getAttributes().get(Attribute.POSITION).toString();
+    }
+
+    /**
      * Get attributes for this component
      *
      * @return Map
@@ -590,5 +445,108 @@ public abstract class Component implements Cloneable {
 
     public java.awt.Component getComponent() {
         return this.component;
+    }
+
+    private double calculator(String value, String direction, boolean record) {
+        direction = direction.toUpperCase(Locale.ENGLISH);
+
+        // 判断是否存在特殊符号
+        Pattern pattern = Pattern.compile(this.specialSymbols);
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.find())
+            throw new IllegalArgumentException("Unsupported unit.");
+
+        StringBuilder numberOfString = new StringBuilder();
+        StringBuilder unit = new StringBuilder();
+
+        boolean matchNumber = true;
+        for (String s : value.split("")) {
+            if (!matchNumber) {
+                unit.append(s);
+                continue;
+            }
+
+            try {
+                Integer.parseInt(s);
+            } catch (Exception e) {
+                matchNumber = false;
+                if (s.equalsIgnoreCase("."))
+                    continue;
+
+                unit.append(s);
+                continue;
+            }
+
+            numberOfString.append(s);
+        }
+
+        if (numberOfString.length() == 0)
+            return -1;
+
+        double number = -1;
+        switch (unit.toString().toUpperCase(Locale.ENGLISH)) {
+            case "":
+            case "PX":
+                number = Double.parseDouble(numberOfString.toString());
+                break;
+            case "%":
+                // 处理特殊对象
+                if (this instanceof Window) {
+                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                    if ("HORIZONTAL".equalsIgnoreCase(direction))
+                        number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
+                    if ("ENDWAYS".equalsIgnoreCase(direction))
+                        number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
+                    break;
+                }
+                // 处理其他对象
+                Component parent = null;
+                while (true) {
+                    if (parent == null)
+                        parent = this.getParent();
+
+                    if ("RELATIVE".equalsIgnoreCase(parent.position()) || "STATIC".equalsIgnoreCase(parent.position()))
+                        break;
+
+                    parent = parent.getParent();
+                    if (parent instanceof Window)
+                        break;
+                }
+                // 处理当 parent 为 window 且position 不是 relative和static的情况
+                if (!parent.position().equalsIgnoreCase("RELATIVE") && !parent.position().equalsIgnoreCase("STATIC")) {
+                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                    if ("HORIZONTAL".equalsIgnoreCase(direction))
+                        number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
+                    if ("ENDWAYS".equalsIgnoreCase(direction))
+                        number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
+                    break;
+                }
+
+                if ("HORIZONTAL".equalsIgnoreCase(direction))
+                    number = parent.width() * Double.parseDouble(numberOfString.toString()) / 100;
+                if ("ENDWAYS".equalsIgnoreCase(direction))
+                    number = parent.height() * Double.parseDouble(numberOfString.toString()) / 100;
+                break;
+            case "VW":
+                if (this instanceof Window) {
+                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                    number = dimension.getWidth() * Double.parseDouble(numberOfString.toString()) / 100;
+                    break;
+                }
+                number = this.window.width() * Double.parseDouble(numberOfString.toString()) / 100;
+                break;
+            case "VH":
+                // 处理特殊对象
+                if (this instanceof Window) {
+                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                    number = dimension.getHeight() * Double.parseDouble(numberOfString.toString()) / 100;
+                    break;
+                }
+                number = this.window.height() * Double.parseDouble(numberOfString.toString()) / 100;
+                break;
+        }
+        if (record)
+            this.attributeManager.set(Attribute.HEIGHT, number);
+        return number;
     }
 }
