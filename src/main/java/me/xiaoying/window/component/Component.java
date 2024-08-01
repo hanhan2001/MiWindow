@@ -84,7 +84,7 @@ public abstract class Component implements Cloneable {
      * @return Component
      */
     public Component width(String width) {
-        double number = this.calculator(width, "ENDWAYS", false);
+        double number = this.calculator(width, "HORIZONTAL", false);
         Component c = this.width((int) number, false);
         this.attributeManager.set(Attribute.WIDTH, width);
         return c;
@@ -156,7 +156,7 @@ public abstract class Component implements Cloneable {
      * @return Component
      */
     public Component height(String height) {
-        double number = this.calculator(height, "HORIZONTAL", false);;
+        double number = this.calculator(height, "ENDWAYS", false);;
         Component c = this.height((int) number - 18, false);
         this.attributeManager.set(Attribute.HEIGHT, height);
         return c;
