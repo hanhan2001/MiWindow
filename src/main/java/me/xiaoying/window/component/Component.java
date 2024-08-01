@@ -60,11 +60,11 @@ public abstract class Component implements Cloneable {
     /**
      * Get width for this component
      *
-     * @param extra get truth width for this component
+     * @param exact get truth width for this component
      * @return String
      */
-    public String width(boolean extra) {
-        if (!extra || this.attributeManager.get(Attribute.WIDTH).toString() == null)
+    public String width(boolean exact) {
+        if (!exact || this.attributeManager.get(Attribute.WIDTH).toString() == null)
             return this.getComponent().getWidth() + "px";
 
         return this.attributeManager.get(Attribute.WIDTH).toString();
@@ -209,11 +209,11 @@ public abstract class Component implements Cloneable {
     /**
      * Get height for this component
      *
-     * @param extra get truth width for this component
+     * @param exact get truth width for this component
      * @return String
      */
-    public String height(boolean extra) {
-        if (!extra || this.attributeManager.get(Attribute.HEIGHT).toString() == null)
+    public String height(boolean exact) {
+        if (!exact || this.attributeManager.get(Attribute.HEIGHT).toString() == null)
             return this.width() + "px";
 
         return this.attributeManager.get(Attribute.HEIGHT).toString();
@@ -415,7 +415,7 @@ public abstract class Component implements Cloneable {
      *
      * @return Component
      */
-    public Component getExtraParent() {
+    public Component getExactParent() {
         return this.parent;
     }
 
