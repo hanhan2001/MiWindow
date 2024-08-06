@@ -8,16 +8,16 @@ import java.util.Locale;
 import java.util.Map;
 
 public enum Attribute implements Cloneable {
-    NAME("name", (component, graphics, attributeValue) -> component.name(attributeValue.toString())),
-    WIDTH("width", (component, graphics, attributeValue) -> component.width(attributeValue.toString())),
-    HEIGHT("height", (component, graphics, attributeValue) -> component.height(attributeValue.toString())),
-    COLOR("color", (component, graphics, attributeValue) -> {
+    NAME("name", 0, (component, graphics, attributeValue) -> component.name(attributeValue.toString())),
+    WIDTH("width", 0, (component, graphics, attributeValue) -> component.width(attributeValue.toString())),
+    HEIGHT("height", 0, (component, graphics, attributeValue) -> component.height(attributeValue.toString())),
+    COLOR("color", 0, (component, graphics, attributeValue) -> {
         if (attributeValue instanceof Color)
             component.getComponent().setForeground(((Color) attributeValue).toAWTColor());
         else
             component.getComponent().setForeground((java.awt.Color) attributeValue);
     }),
-    BACKGROUND_COLOR("background_color", (component, graphics, attributeValue) -> {
+    BACKGROUND_COLOR("background_color", 0, (component, graphics, attributeValue) -> {
         if (attributeValue instanceof me.xiaoying.window.Color) {
             if (graphics == null) {
                 component.getComponent().setBackground(((Color) attributeValue).toAWTColor());
@@ -35,9 +35,9 @@ public enum Attribute implements Cloneable {
 
         graphics.setColor((java.awt.Color) attributeValue);
     }),
-    FONT_SIZE("font_size", (component, graphics, attributeValue) -> {}),
-    FONT_FAMILY("font_family", (component, graphics, attributeValue) -> {}),
-    POSITION("position", (component, graphics, attributeValue) -> {
+    FONT_SIZE("font_size", 0, (component, graphics, attributeValue) -> {}),
+    FONT_FAMILY("font_family", 0, (component, graphics, attributeValue) -> {}),
+    POSITION("position", 0, (component, graphics, attributeValue) -> {
         if (attributeValue.toString().equalsIgnoreCase("static")) {
 
         }
@@ -51,62 +51,68 @@ public enum Attribute implements Cloneable {
 
         }
     }),
-    LEFT("left", (component, graphics, attributeValue) -> {}),
-    RIGHT("right", (component, graphics, attributeValue) -> {}),
-    TOP("top", (component, graphics, attributeValue) -> {}),
-    BOTTOM("bottom", (component, graphics, attributeValue) -> {}),
-    DISPLAY("display", (component, graphics, attributeValue) -> {
-        String type = attributeValue.toString();
-        switch (type.toUpperCase(Locale.ENGLISH)) {
-            case "NULL":
-                component.visible(false);
-                break;
-            case "BLOCK": {
-                if (!(component instanceof Container))
-                    break;
+    LEFT("left", 0, (component, graphics, attributeValue) -> {}),
+    RIGHT("right", 0, (component, graphics, attributeValue) -> {}),
+    TOP("top", 0, (component, graphics, attributeValue) -> {
+//        double calculator = component.calculator(attributeValue.toString(), "ENDWAYS", false);
+//        component.getComponent().setLocation((int) component.getComponent().getLocation().getX(), (int) calculator);
+    }),
+    BOTTOM("bottom", 0, (component, graphics, attributeValue) -> {}),
+    DISPLAY("display", 0, (component, graphics, attributeValue) -> {
+        String type = attributeValue.toString().toUpperCase(Locale.ENGLISH);
+        if ("NULL".equalsIgnoreCase(type)) {
+            component.visible(false);
+            return;
+        }
 
-                Container container = (Container) component;
-                for (int i = 0; i < container.getChildren().size(); i++) {
-                    if (i == 0) {
-                        container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) container.getComponent().getLocation().getY());
-                        continue;
-                    }
+        // determine component is Container
+        if (!(component instanceof Container))
+            return;
 
-                    Component last = container.getChildren().get(i - 1);
-                    container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) (last.getComponent().getLocation().getY() + last.getComponent().getHeight()));
+        Container container = (Container) component;
+        if ("BLOCK".equalsIgnoreCase(type)) {
+            for (int i = 0; i < container.getChildren().size(); i++) {
+                if (i == 0) {
+                    container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) container.getComponent().getLocation().getY());
+                    continue;
                 }
-                break;
+
+                Component last = container.getChildren().get(i - 1);
+                container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) (last.getComponent().getLocation().getY() + last.getComponent().getHeight()));
             }
-            case "FLEX": {
-                if (!(component instanceof Container))
-                    break;
+            return;
+        }
 
-                Container container = (Container) component;
-                for (int i = 0; i < container.getChildren().size(); i++) {
-                    if (i == 0) {
-                        container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) container.getComponent().getLocation().getY());
-                        continue;
-                    }
-
-                    Component last = container.getChildren().get(i - 1);
-                    container.getChildren().get(i).getComponent().setLocation((int) last.getComponent().getLocation().getX() + last.getComponent().getWidth(), (int) (component.getComponent().getLocation().getY()));
+        if ("FLEX".equalsIgnoreCase(type)) {
+            for (int i = 0; i < container.getChildren().size(); i++) {
+                if (i == 0) {
+                    container.getChildren().get(i).getComponent().setLocation((int) container.getComponent().getLocation().getX(), (int) container.getComponent().getLocation().getY());
+                    continue;
                 }
-                break;
+
+                Component last = container.getChildren().get(i - 1);
+                container.getChildren().get(i).getComponent().setLocation((int) last.getComponent().getLocation().getX() + last.getComponent().getWidth(), (int) (component.getComponent().getLocation().getY()));
             }
         }
     }),
-    TEXT("text", (component, graphics, attributeValue) -> component.text(attributeValue.toString()));
+    TEXT("text", 0, (component, graphics, attributeValue) -> component.text(attributeValue.toString()));
 
     private final String name;
+    private final int priority;
     private final AttributeHandle attributeHandle;
 
-    Attribute(String name, AttributeHandle attributeHandle) {
+    Attribute(String name, int priority, AttributeHandle attributeHandle) {
         this.name = name;
+        this.priority = priority;
         this.attributeHandle = attributeHandle;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public int getPriority() {
+        return this.priority;
     }
 
     public static Map<Attribute, Object> getDefaultAttribute() {
