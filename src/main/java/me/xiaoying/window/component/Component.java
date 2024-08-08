@@ -407,6 +407,12 @@ public abstract class Component implements Cloneable {
         return this;
     }
 
+    public Component top(String value) {
+        double endways = this.calculator(value, "ENDWAYS", false);
+        this.attributeManager.set(Attribute.TOP, value);
+        return this;
+    }
+
     /**
      * Recalculate something for this component
      */
@@ -447,7 +453,7 @@ public abstract class Component implements Cloneable {
         return this.component;
     }
 
-    private double calculator(String value, String direction, boolean record) {
+    public double calculator(String value, String direction, boolean record) {
         direction = direction.toUpperCase(Locale.ENGLISH);
 
         // 判断是否存在特殊符号
