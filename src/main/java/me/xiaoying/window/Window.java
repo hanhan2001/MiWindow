@@ -1,163 +1,158 @@
 package me.xiaoying.window;
 
-import me.xiaoying.window.awt.MiFrame;
-import me.xiaoying.window.component.Component;
-import me.xiaoying.window.component.Container;
-import me.xiaoying.window.event.EventManager;
-import me.xiaoying.window.event.window.WindowCloseEvent;
-import me.xiaoying.window.event.window.WindowResizedEvent;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VK14;
+import org.lwjgl.vulkan.VkApplicationInfo;
+import org.lwjgl.vulkan.VkInstanceCreateInfo;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.Enumeration;
+public class Window extends Component {
+    private volatile long id;
+    private volatile boolean closed = true;
 
-public class Window extends Container {
-    private final MiFrame miFrame;
-    private final EventManager eventManager = new EventManager();
-
-    public Window() {
-        this.miFrame = new MiFrame(this);
-        this.setComponent(this.miFrame);
-
-        this.width(500);
-        this.height(300);
-
-        this.init();
-    }
-
-    public Window(String title) {
-        this.miFrame = new MiFrame(this);
-        this.miFrame.setTitle(title);
-        this.setComponent(this.miFrame);
-
-        this.width(500);
-        this.height(300);
-
-        this.init();
-    }
-
-    public Window(int width, int height) {
-        this.miFrame = new MiFrame(this);
-        this.setComponent(this.miFrame);
-
-        this.width(width);
-        this.height(height);
-
-        this.init();
+    public Window(String name) {
+        this(name, 800, 600);
     }
 
     public Window(String title, int width, int height) {
-        this.miFrame = new MiFrame(this);
-        this.miFrame.setTitle(title);
-        this.setComponent(this.miFrame);
+        new Thread(() -> {
+            if (!GLFW.glfwInit())
+                throw new IllegalStateException("Unable to initialize GLFW");
 
-        this.width(width);
-        this.height(height);
+            GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
+//            GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
 
-        this.init();
+            this.id = GLFW.glfwCreateWindow(width, height, title, 0, 0);
+
+            if (this.id == 0)
+                throw new RuntimeException("Failed to create the GLFW window");
+
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                VkApplicationInfo appInfo = VkApplicationInfo.calloc()
+                        .sType(VK14.VK_STRUCTURE_TYPE_APPLICATION_INFO)
+                        .pApplicationName(stack.UTF8("Vulkan Application"))
+                        .applicationVersion(VK14.VK_MAKE_VERSION(1, 0, 0))
+                        .pEngineName(stack.UTF8("No Engine"))
+                        .engineVersion(VK14.VK_MAKE_VERSION(1, 0, 0))
+                        .apiVersion(VK14.VK_API_VERSION_1_4);
+
+                VkInstanceCreateInfo createInfo = VkInstanceCreateInfo.calloc()
+                        .sType(VK14.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
+                        .pApplicationInfo(appInfo);
+
+                PointerBuffer instance = stack.mallocPointer(1);
+                if (VK14.vkCreateInstance(createInfo, null, instance) != VK14.VK_SUCCESS) {
+                    throw new RuntimeException("Failed to create Vulkan instance");
+                }
+
+
+                this.closed = false;
+                while (!GLFW.glfwWindowShouldClose(this.id))
+                    GLFW.glfwPollEvents();
+
+                GLFW.glfwDestroyWindow(this.id);
+                GLFW.glfwTerminate();
+                this.closed = true;
+            }
+        }).start();
+
+        // sleep thread to wait the window
+        while (this.id == 0);
     }
 
-    private void init() {
-        this.miFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        // default fort for component
-        FontUIResource fontRes = new FontUIResource(new Font("Microsoft YaHei", Font.PLAIN, 12));
-        for(Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();){
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-
-            if(value instanceof FontUIResource)
-                UIManager.put(key, fontRes);
-        }
-
-        this.miFrame.setLayout(null);
-        this.miFrame.setVisible(true);
-
-        this.miFrame.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                eventManager.callEvent(new WindowResizedEvent(getWindow(), e.getComponent().getWidth(), e.getComponent().getHeight()));
-                recalculate();
-            }
-        });
-
-        this.miFrame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-//                eventManager.callEvent(new W);
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                eventManager.callEvent(new WindowCloseEvent(getWindow()));
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
+    public long getId() {
+        return this.id;
     }
 
-    public Window width(int width) {
-        this.getComponent().setSize(width, this.getComponent().getHeight());
-        return this;
+    public String getTitle() {
+        return GLFW.glfwGetWindowTitle(this.id);
     }
 
-    public Window height(int height) {
-        this.getComponent().setSize(this.getComponent().getWidth(), height);
-        return this;
-    }
-
-    public Window resizable(boolean bool) {
-        this.miFrame.setResizable(bool);
-        return this;
-    }
-
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    @Override
-    public void recalculate() {
-        this.getChildren().forEach(Component::recalculate);
-    }
-
-    public String title() {
-        return this.miFrame.getTitle();
-    }
-
-    public Component title(String title) {
-        this.miFrame.setTitle(title);
+    public Window setTitle(String title) {
+        GLFW.glfwSetWindowTitle(this.id, title);
         return this;
     }
 
     @Override
-    public Window getWindow() {
+    public void setVisible(boolean visible) {
+        if (visible)
+            GLFW.glfwShowWindow(this.id);
+        else
+            GLFW.glfwHideWindow(this.id);
+    }
+
+    @Override
+    public int getWidth() {
+        int[] width = new int[1], height = new int[1];
+        GLFW.glfwGetWindowSize(this.id, width, height);
+        return width[0];
+    }
+
+    @Override
+    public Window setWidth(int width) {
+        this.width = width;
         return this;
+    }
+
+    @Override
+    public int getHeight() {
+        int[] width = new int[1], height = new int[1];
+        GLFW.glfwGetWindowSize(this.id, width, height);
+
+        if (GLFW.glfwGetWindowAttrib(this.id, GLFW.GLFW_DECORATED) == GLFW.GLFW_TRUE)
+            return height[0] + 32;
+
+        return height[0];
+    }
+
+    /**
+     * Get exact of the window<br>
+     * Title's height not in window's height, so we need a method to get the exact window height.
+     *
+     * @return Exact height of the window
+     */
+    public int getHeightExact() {
+        int[] width = new int[1], height = new int[1];
+        GLFW.glfwGetWindowSize(this.id, width, height);
+        return height[0];
+    }
+
+    @Override
+    public Window setHeight(int height) {
+        this.height = height;
+        return this;
+    }
+
+    public int getX() {
+        int[] x = new int[1], y = new int[1];
+        GLFW.glfwGetWindowPos(this.id, x, y);
+        return x[0];
+    }
+
+    public Window setX(int x) {
+        return this.setPosition(x, this.getY());
+    }
+
+    public Window setY(int y) {
+        return this.setPosition(this.getX(), y);
+    }
+
+    public int getY() {
+        int[] x = new int[1], y = new int[1];
+        GLFW.glfwGetWindowPos(this.id, x, y);
+        return y[0];
+    }
+
+    public Window setPosition(int x, int y) {
+        if (GLFW.glfwGetWindowAttrib(this.id, GLFW.GLFW_DECORATED) == GLFW.GLFW_TRUE)
+            y += 32;
+
+        GLFW.glfwSetWindowPos(this.id, x, y);
+        return this;
+    }
+
+    public boolean isClosed() {
+        return this.closed;
     }
 }
