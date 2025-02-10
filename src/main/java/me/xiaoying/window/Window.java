@@ -75,11 +75,13 @@ public class Window extends Component {
     }
 
     @Override
-    public void setVisible(boolean visible) {
+    public Window setVisible(boolean visible) {
         if (visible)
             GLFW.glfwShowWindow(this.id);
         else
             GLFW.glfwHideWindow(this.id);
+
+        return this;
     }
 
     @Override

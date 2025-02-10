@@ -4,7 +4,7 @@ public abstract class Component {
     protected int width;
     protected int height;
 
-    public abstract void setVisible(boolean visible);
+    public abstract Component setVisible(boolean visible);
 
     public int getWidth() {
         return this.width;
