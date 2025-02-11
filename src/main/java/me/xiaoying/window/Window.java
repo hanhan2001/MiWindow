@@ -42,10 +42,8 @@ public class Window extends Component {
                         .pApplicationInfo(appInfo);
 
                 PointerBuffer instance = stack.mallocPointer(1);
-                if (VK14.vkCreateInstance(createInfo, null, instance) != VK14.VK_SUCCESS) {
+                if (VK14.vkCreateInstance(createInfo, null, instance) != VK14.VK_SUCCESS)
                     throw new RuntimeException("Failed to create Vulkan instance");
-                }
-
 
                 this.closed = false;
                 while (!GLFW.glfwWindowShouldClose(this.id))
