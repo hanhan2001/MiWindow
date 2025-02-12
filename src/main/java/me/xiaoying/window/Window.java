@@ -7,6 +7,7 @@ import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkApplicationInfo;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class Window extends Component {
     private volatile boolean closed = true;
 
     // fps
-    private volatile long lastFrameTime;
-    private volatile int frameCount;
-    private volatile float fps;
+    private volatile double lastFPSUpdate;
+    private volatile long frameCount;
+    private volatile double fps;
 
     // events
     private final List<Runnable> update = new ArrayList<>();
@@ -60,16 +61,14 @@ public class Window extends Component {
                 while (!GLFW.glfwWindowShouldClose(this.id)) {
                     this.getUpdateEvents().forEach(Runnable::run);
 
-                    // fps
-                    long currentTime = System.nanoTime();
-                    double deltaTime = (currentTime - lastFrameTime) / 1_000_000_000.0;
-
-                    this.lastFrameTime = currentTime;
+                    double currentTime = GLFW.glfwGetTime();
+                    double deltaTime = currentTime - this.lastFPSUpdate;
 
                     this.frameCount++;
 
                     if (deltaTime >= 1.0) {
-                        this.fps = (float) (this.frameCount / deltaTime);
+                        this.fps = this.frameCount / deltaTime;
+                        this.lastFPSUpdate = currentTime;
                         this.frameCount = 0;
                     }
 
@@ -179,7 +178,7 @@ public class Window extends Component {
         return this;
     }
 
-    public float getFPS() {
+    public double getFPS() {
         return this.fps;
     }
 
