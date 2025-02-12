@@ -7,9 +7,20 @@ import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkApplicationInfo;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Window extends Component {
     private volatile long id;
     private volatile boolean closed = true;
+
+    // fps
+    private volatile long lastFrameTime;
+    private volatile int frameCount;
+    private volatile float fps;
+
+    // events
+    private final List<Runnable> update = new ArrayList<>();
 
     public Window(String name) {
         this(name, 800, 600);
@@ -46,8 +57,24 @@ public class Window extends Component {
                     throw new RuntimeException("Failed to create Vulkan instance");
 
                 this.closed = false;
-                while (!GLFW.glfwWindowShouldClose(this.id))
+                while (!GLFW.glfwWindowShouldClose(this.id)) {
+                    this.getUpdateEvents().forEach(Runnable::run);
+
+                    // fps
+                    long currentTime = System.nanoTime();
+                    double deltaTime = (currentTime - lastFrameTime) / 1_000_000_000.0;
+
+                    this.lastFrameTime = currentTime;
+
+                    this.frameCount++;
+
+                    if (deltaTime >= 1.0) {
+                        this.fps = (float) (this.frameCount / deltaTime);
+                        this.frameCount = 0;
+                    }
+
                     GLFW.glfwPollEvents();
+                }
 
                 GLFW.glfwDestroyWindow(this.id);
                 GLFW.glfwTerminate();
@@ -145,11 +172,15 @@ public class Window extends Component {
     }
 
     public Window setPosition(int x, int y) {
-        if (GLFW.glfwGetWindowAttrib(this.id, GLFW.GLFW_DECORATED) == GLFW.GLFW_TRUE)
+        if (GLFW.glfwGetWindowAttrib(this.id, GLFW.GLFW_DECORATED) == GLFW.GLFW_TRUE && y == 0)
             y += 32;
 
         GLFW.glfwSetWindowPos(this.id, x, y);
         return this;
+    }
+
+    public float getFPS() {
+        return this.fps;
     }
 
     public boolean isClosed() {
